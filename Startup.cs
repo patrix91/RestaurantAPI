@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RestaurantAPI.Controllers;
 using RestaurantAPI.Entities;
 
 namespace RestaurantAPI
@@ -20,7 +19,7 @@ namespace RestaurantAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+            //services.AddTransient<IWeatherForecastService, WeatherForecastService>();
             services.AddControllers();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();

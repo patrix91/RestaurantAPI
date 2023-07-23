@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using RestaurantAPI.Entities;
+using System.Linq;
 
 namespace RestaurantAPI
 {
