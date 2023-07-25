@@ -5,18 +5,18 @@ using System.Linq;
 using RestaurantAPI.Model;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.Services;
 
 namespace RestaurantAPI.Controllers
 {
     [Route("api/restaurant")]
     public class RestaurantController : ControllerBase
     {
-        private readonly RestaurantDbContext dbContext;
-        private readonly IMapper mapper;
-        public RestaurantController(RestaurantDbContext restaurantDbContext, IMapper mapper)
+        private readonly IRestaurantService restaurantService;
+        public RestaurantController(IRestaurantService restaurantService)
         {
-            dbContext = restaurantDbContext;
-            this.mapper = mapper;
+            this.restaurantService = restaurantService;
+            
         }
 
         [HttpPost]
@@ -24,43 +24,32 @@ namespace RestaurantAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
-            var restaurant = mapper.Map<Restaurant>(dto);
-            dbContext.Restaurants.Add(restaurant);
-            dbContext.SaveChanges();
+            
+            var id = restaurantService.Create(dto);
 
-            return Created($"/api/restaurant/{restaurant.Id}", null);
+            return Created($"/api/restaurant/{id}", null);
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<RestaurantDTO>> GetAll()
         {
-            var restaurants = dbContext
-                .Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes)
-                .ToList();
+            var restaurantsDto = restaurantService.GetAll();
 
-            var restaurantsDtos = mapper.Map<List<RestaurantDTO>>(restaurants);
-
-            return Ok(restaurantsDtos);
+            return Ok(restaurantsDto);
         }
         [HttpGet("{id}")]
         public ActionResult<Restaurant> Get([FromRoute] int id)
         {
-            var restaurant = dbContext.Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes).FirstOrDefault(r => r.Id == id);
+            var restaurant = restaurantService.GetById(id);
 
             if (restaurant is null)
             {
                 return NotFound();
             }
 
-            var restaurantDto = mapper.Map<RestaurantDTO>(restaurant);
-
-            return Ok(restaurantDto);
+            return Ok(restaurant);
         }
     }
 }
