@@ -22,6 +22,10 @@ namespace RestaurantAPI.Controllers
         [HttpPost]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var restaurant = mapper.Map<Restaurant>(dto);
             dbContext.Restaurants.Add(restaurant);
             dbContext.SaveChanges();
