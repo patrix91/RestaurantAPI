@@ -12,6 +12,8 @@ namespace RestaurantAPI.Services
         RestaurantDTO GetById(int id);
         IEnumerable<RestaurantDTO> GetAll();
         int Create(CreateRestaurantDto dto);
+
+        bool Delete(int id);
     }
     public class RestaurantServices : IRestaurantService
     {
@@ -21,6 +23,18 @@ namespace RestaurantAPI.Services
         {
             dbContext = restaurantDbContext;
             this.mapper = mapper;
+        }
+
+        public bool Delete(int id)
+        {
+            var restaurant = dbContext.Restaurants.FirstOrDefault(r => r.Id == id);
+
+            if (restaurant is null) return false;
+
+            dbContext.Restaurants.Remove(restaurant);
+            dbContext.SaveChanges();
+
+            return true;
         }
         public RestaurantDTO GetById(int id)
         {
