@@ -4,6 +4,7 @@ using RestaurantAPI.Entities;
 using RestaurantAPI.Model;
 using System.Linq;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace RestaurantAPI.Services
 {
@@ -21,10 +22,13 @@ namespace RestaurantAPI.Services
     {
         private readonly RestaurantDbContext dbContext;
         private readonly IMapper mapper;
-        public RestaurantServices(RestaurantDbContext restaurantDbContext, IMapper mapper)
+        private readonly ILogger<RestaurantServices> logger;
+
+        public RestaurantServices(RestaurantDbContext restaurantDbContext, IMapper mapper, ILogger<RestaurantServices> logger)
         {
             dbContext = restaurantDbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public bool Update(int id, UpdateRestaurantDTO dto)
