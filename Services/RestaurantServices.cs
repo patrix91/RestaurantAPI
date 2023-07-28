@@ -14,6 +14,8 @@ namespace RestaurantAPI.Services
         int Create(CreateRestaurantDto dto);
 
         bool Delete(int id);
+
+        public bool Update(int id, UpdateRestaurantDTO dto);
     }
     public class RestaurantServices : IRestaurantService
     {
@@ -23,6 +25,21 @@ namespace RestaurantAPI.Services
         {
             dbContext = restaurantDbContext;
             this.mapper = mapper;
+        }
+
+        public bool Update(int id, UpdateRestaurantDTO dto)
+        {
+            var restaurant = dbContext.Restaurants.FirstOrDefault(r => r.Id == id);
+
+            if (restaurant is null) return false;
+
+            restaurant.Name = dto.Name;
+            restaurant.Description = dto.Description;
+            restaurant.HasDelivery = dto.HasDelivery;
+
+            dbContext.SaveChanges();
+
+            return true;
         }
 
         public bool Delete(int id)
