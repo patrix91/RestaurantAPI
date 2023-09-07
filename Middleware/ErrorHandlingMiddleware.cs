@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using RestaurantAPI.Exceptions;
+using System.Threading.Tasks;
+using System;
 
 namespace RestaurantAPI.Middleware
 {
@@ -22,6 +20,12 @@ namespace RestaurantAPI.Middleware
             try
             {
                 await next.Invoke(context);
+            }
+            catch (BadRequestException badRequestException)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(badRequestException.Message);
+
             }
             catch (NotFoundException notFoundException)
             {
