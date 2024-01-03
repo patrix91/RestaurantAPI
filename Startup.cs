@@ -1,18 +1,18 @@
-using System.Text;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using RestaurantAPI.Model.Validator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using RestaurantAPI.Entities;
+using FluentValidation.AspNetCore;
 using RestaurantAPI.Middleware;
-using RestaurantAPI.Model;
-using RestaurantAPI.Model.Validator;
+using RestaurantAPI.Entities;
 using RestaurantAPI.Services;
+using RestaurantAPI.Model;
+using FluentValidation;
+using System.Text;
 
 namespace RestaurantAPI
 {
