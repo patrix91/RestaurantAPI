@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantAPI.Services;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Model;
-using RestaurantAPI.Services;
 
 namespace RestaurantAPI.Controllers
 {
     [Route("api/restaurant")]
     [ApiController]
+    [Authorize]
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantService restaurantService;
@@ -42,7 +43,6 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public ActionResult<IEnumerable<RestaurantDTO>> GetAll()
         {
             var restaurantsDto = restaurantService.GetAll();
@@ -50,6 +50,7 @@ namespace RestaurantAPI.Controllers
             return Ok(restaurantsDto);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<Restaurant> Get([FromRoute] int id)
         {
             var restaurant = restaurantService.GetById(id);
