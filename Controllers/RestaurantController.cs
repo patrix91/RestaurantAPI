@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Model;
@@ -41,6 +42,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<RestaurantDTO>> GetAll()
         {
             var restaurantsDto = restaurantService.GetAll();
