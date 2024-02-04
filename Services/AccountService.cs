@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using RestaurantAPI.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using RestaurantAPI.Exceptions;
+using System.Security.Claims;
+using RestaurantAPI.Entities;
 using RestaurantAPI.Model;
+using System.Linq;
+using System.Text;
+using System;
+using Microsoft.AspNetCore.Http;
 
 namespace RestaurantAPI.Services
 {
