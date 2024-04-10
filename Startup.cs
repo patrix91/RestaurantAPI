@@ -51,10 +51,9 @@ namespace RestaurantAPI
 
                     };
             });
-            //services.AddTransient<IWeatherForecastService, WeatherForecastService>();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality"));
+                options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Poland", "Polish"));
             });
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
