@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using FluentValidation.AspNetCore;
+using RestaurantAPI.Authorization;
 using RestaurantAPI.Middleware;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Services;
@@ -54,7 +56,10 @@ namespace RestaurantAPI
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Poland", "Polish"));
+                options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
             });
+
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();
