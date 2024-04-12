@@ -13,7 +13,7 @@ namespace RestaurantAPI.Services
     {
         RestaurantDTO GetById(int id);
         IEnumerable<RestaurantDTO> GetAll();
-        int Create(CreateRestaurantDto dto);
+        int Create(CreateRestaurantDto dto, int userId);
 
         void Delete(int id);
 
@@ -85,9 +85,10 @@ namespace RestaurantAPI.Services
             return restaurantsDto;
         }
 
-        public int Create(CreateRestaurantDto dto)
+        public int Create(CreateRestaurantDto dto, int userId)
         {
             var restaurant = mapper.Map<Restaurant>(dto);
+            restaurant.CreatedById = userId;
             dbContext.Restaurants.Add(restaurant);
             dbContext.SaveChanges();
 
