@@ -23,7 +23,7 @@ namespace RestaurantAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateRestaurantDTO dto, [FromRoute] int id)
         {
-            restaurantService.Update(id, dto);
+            restaurantService.Update(id, dto, User);
 
             return Ok();
         }
@@ -31,7 +31,8 @@ namespace RestaurantAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
-            restaurantService.Delete(id);
+            restaurantService.Delete(id, User);
+
             return NoContent();
         }
 

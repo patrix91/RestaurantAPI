@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RestaurantAPI.Authorization;
 using System.Collections.Generic;
 using RestaurantAPI.Exceptions;
 using RestaurantAPI.Entities;
+using System.Security.Claims;
 using RestaurantAPI.Model;
 using System.Linq;
 using AutoMapper;
@@ -15,29 +18,41 @@ namespace RestaurantAPI.Services
         IEnumerable<RestaurantDTO> GetAll();
         int Create(CreateRestaurantDto dto, int userId);
 
-        void Delete(int id);
+        void Delete(int id, ClaimsPrincipal user);
 
-        void Update(int id, UpdateRestaurantDTO dto);
+        void Update(int id, UpdateRestaurantDTO dto, ClaimsPrincipal user);
     }
     public class RestaurantServices : IRestaurantService
     {
         private readonly RestaurantDbContext dbContext;
         private readonly IMapper mapper;
         private readonly ILogger<RestaurantServices> logger;
+        private readonly IAuthorizationService authorizationService;
 
-        public RestaurantServices(RestaurantDbContext restaurantDbContext, IMapper mapper, ILogger<RestaurantServices> logger)
+        public RestaurantServices(RestaurantDbContext restaurantDbContext, IMapper mapper, ILogger<RestaurantServices> logger,
+             IAuthorizationService authorizationService)
         {
             dbContext = restaurantDbContext;
             this.mapper = mapper;
             this.logger = logger;
+            this.authorizationService = authorizationService;
         }
 
-        public void Update(int id, UpdateRestaurantDTO dto)
+        public void Update(int id, UpdateRestaurantDTO dto, ClaimsPrincipal user)
         {
+            
             var restaurant = dbContext.Restaurants.FirstOrDefault(r => r.Id == id);
 
             if (restaurant is null)
                 throw new NotFoundException("Restaurant not found");
+
+            var authorizationResult = authorizationService.AuthorizeAsync(user, restaurant, 
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             restaurant.Name = dto.Name;
             restaurant.Description = dto.Description;
@@ -46,7 +61,7 @@ namespace RestaurantAPI.Services
             dbContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(int id, ClaimsPrincipal user)
         {
             //logger.LogWarning($"Restaurant with id: {id} DELETE action invoked.");
             logger.LogError($"Restaurant with id: {id} DELETE action invoked.");
@@ -54,6 +69,14 @@ namespace RestaurantAPI.Services
 
             if (restaurant is null)
                 throw new NotFoundException("Restaurant not found");
+
+            var authorizationResult = authorizationService.AuthorizeAsync(user, restaurant,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             dbContext.Restaurants.Remove(restaurant);
             dbContext.SaveChanges();
